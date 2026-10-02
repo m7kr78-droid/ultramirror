@@ -2,6 +2,19 @@ import ReplayKit
 import SwiftUI
 
 struct ContentView: View {
+    @State private var apps: [LaunchableApp] = []
+    @State private var query = ""
+    @State private var selected: LaunchableApp?
+    @State private var didLaunch = false
+
+    private var filtered: [LaunchableApp] {
+        let text = query.trimmingCharacters(in: .whitespacesAndNewlines)
+        if text.isEmpty { return apps }
+        return apps.filter {
+            $0.name.localizedCaseInsensitiveContains(text) || $0.bundleID.localizedCaseInsensitiveContains(text)
+        }
+    }
+
     var body: some View {
         ZStack {
             LinearGradient(
@@ -14,76 +27,105 @@ struct ContentView: View {
             )
             .ignoresSafeArea()
 
-            VStack(spacing: 28) {
-                VStack(spacing: 8) {
-                    Text("مرآة USB")
-                        .font(.system(size: 36, weight: .bold))
-                    Text("1080p · 60FPS · كيبل الشحن")
-                        .font(.system(size: 16, weight: .medium))
-                        .foregroundStyle(.white.opacity(0.7))
-                }
-                .padding(.top, 24)
+            VStack(spacing: 12) {
+                Text("مرآة USB")
+                    .font(.system(size: 28, weight: .bold))
+                    .padding(.top, 8)
 
-                VStack(alignment: .leading, spacing: 14) {
-                    step(number: "1", text: "اربط الآيفون بالكمبيوتر بكابل الشحن.")
-                    step(number: "2", text: "افتح برنامج UltraMirror على الويندوز.")
-                    step(number: "3", text: "اضغط زر البث تحت، واختر مرآة USB.")
-                    step(number: "4", text: "بعد ما يبدأ البث، ادخل اللعبة عادي.")
-                }
-                .padding(20)
-                .background(.white.opacity(0.06), in: RoundedRectangle(cornerRadius: 20, style: .continuous))
-                .overlay(
-                    RoundedRectangle(cornerRadius: 20, style: .continuous)
-                        .stroke(.white.opacity(0.08), lineWidth: 1)
-                )
-                .padding(.horizontal, 20)
-
-                BroadcastStartButton()
-                    .frame(width: 88, height: 88)
-
-                Text("اضغط الزر الأحمر لبدء نقل الشاشة")
-                    .font(.system(size: 14, weight: .semibold))
-                    .foregroundStyle(.white.opacity(0.8))
-
-                Spacer()
-
-                Text("التأخير يعتمد على الكابل والمعالج. صفر تأخير غير ممكن، وهذا أقل تأخير عملي على USB.")
-                    .font(.system(size: 12))
-                    .foregroundStyle(.white.opacity(0.45))
+                Text(selected == nil ? "اختر لعبة أو برنامج، بعدين اضغط البث" : "بعد البث راح يفتح: \(selected!.name)")
+                    .font(.system(size: 14, weight: .medium))
+                    .foregroundStyle(.white.opacity(0.7))
                     .multilineTextAlignment(.center)
-                    .padding(.horizontal, 28)
-                    .padding(.bottom, 18)
+                    .padding(.horizontal, 16)
+
+                HStack {
+                    Image(systemName: "magnifyingglass")
+                    TextField("ابحث عن لعبة أو برنامج", text: $query)
+                        .textInputAutocapitalization(.never)
+                }
+                .padding(10)
+                .background(.white.opacity(0.08), in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+                .padding(.horizontal, 16)
+
+                List(filtered) { app in
+                    Button {
+                        selected = app
+                    } label: {
+                        HStack {
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text(app.name)
+                                    .foregroundStyle(.white)
+                                    .font(.system(size: 16, weight: .semibold))
+                                Text(app.bundleID)
+                                    .foregroundStyle(.white.opacity(0.45))
+                                    .font(.system(size: 11))
+                                    .lineLimit(1)
+                            }
+                            Spacer()
+                            if selected?.bundleID == app.bundleID {
+                                Image(systemName: "checkmark.circle.fill")
+                                    .foregroundStyle(.red)
+                            }
+                        }
+                    }
+                    .listRowBackground(Color.white.opacity(selected?.bundleID == app.bundleID ? 0.12 : 0.04))
+                }
+                .scrollContentBackground(.hidden)
+                .listStyle(.plain)
+
+                HStack(spacing: 16) {
+                    BroadcastStartButton()
+                        .frame(width: 72, height: 72)
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("ابدأ البث")
+                            .font(.system(size: 16, weight: .bold))
+                        Text("اختر مرآة USB من القائمة")
+                            .font(.system(size: 12))
+                            .foregroundStyle(.white.opacity(0.65))
+                    }
+                    Spacer()
+                }
+                .padding(.horizontal, 20)
+                .padding(.bottom, 12)
             }
         }
         .environment(\.layoutDirection, .rightToLeft)
         .preferredColorScheme(.dark)
+        .onAppear {
+            apps = AppLauncher.installedApps()
+        }
+        .onReceive(NotificationCenter.default.publisher(for: UIScreen.capturedDidChangeNotification)) { _ in
+            launchSelectedIfNeeded()
+        }
+        .onReceive(NotificationCenter.default.publisher(for: UIApplication.didBecomeActiveNotification)) { _ in
+            launchSelectedIfNeeded()
+        }
     }
 
-    private func step(number: String, text: String) -> some View {
-        HStack(alignment: .top, spacing: 12) {
-            Text(number)
-                .font(.system(size: 14, weight: .bold, design: .rounded))
-                .frame(width: 28, height: 28)
-                .background(Color.red.opacity(0.9), in: Circle())
-            Text(text)
-                .font(.system(size: 16, weight: .medium))
-                .foregroundStyle(.white.opacity(0.92))
-            Spacer(minLength: 0)
+    private func launchSelectedIfNeeded() {
+        if !UIScreen.main.isCaptured {
+            didLaunch = false
+            return
+        }
+        guard let selected, !didLaunch else { return }
+        didLaunch = true
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.9) {
+            AppLauncher.open(selected)
         }
     }
 }
 
 struct BroadcastStartButton: UIViewRepresentable {
     func makeUIView(context: Context) -> RPSystemBroadcastPickerView {
-        let picker = RPSystemBroadcastPickerView(frame: CGRect(x: 0, y: 0, width: 88, height: 88))
-        picker.preferredExtension = "com.ultramirror.app.broadcast"
+        let picker = RPSystemBroadcastPickerView(frame: CGRect(x: 0, y: 0, width: 72, height: 72))
+        picker.preferredExtension = (Bundle.main.bundleIdentifier ?? "com.ultramirror.app") + ".broadcast"
         picker.showsMicrophoneButton = false
         picker.backgroundColor = .clear
         if let button = picker.subviews.first(where: { $0 is UIButton }) as? UIButton {
             button.imageView?.tintColor = .white
             button.tintColor = .white
             button.backgroundColor = UIColor(red: 0.86, green: 0.15, blue: 0.18, alpha: 1)
-            button.layer.cornerRadius = 44
+            button.layer.cornerRadius = 36
             button.clipsToBounds = true
             button.frame = picker.bounds
         }

@@ -17,11 +17,41 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.0</string>
+	<string>1.1</string>
 	<key>CFBundleVersion</key>
-	<string>1</string>
+	<string>2</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>codmobile</string>
+		<string>codwarzone</string>
+		<string>tencentlaunch1106467070</string>
+		<string>fortnite</string>
+		<string>roblox</string>
+		<string>minecraft</string>
+		<string>yuanshengame</string>
+		<string>hkrpg</string>
+		<string>clashofclans</string>
+		<string>clashroyale</string>
+		<string>brawlstars</string>
+		<string>freefire</string>
+		<string>mobilelegends</string>
+		<string>efootball</string>
+		<string>easportsfc</string>
+		<string>amongus</string>
+		<string>tiktok</string>
+		<string>youtube</string>
+		<string>instagram</string>
+		<string>whatsapp</string>
+		<string>snapchat</string>
+		<string>discord</string>
+		<string>tg</string>
+		<string>spotify</string>
+		<string>nflx</string>
+		<string>photos-redirect</string>
+		<string>altstore</string>
+	</array>
 	<key>UILaunchScreen</key>
 	<dict/>
 	<key>UISupportedInterfaceOrientations</key>
