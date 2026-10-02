@@ -10,6 +10,7 @@
 		A100000000000001 /* UltraMirrorApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A200000000000001 /* UltraMirrorApp.swift */; };
 		A100000000000002 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A200000000000002 /* ContentView.swift */; };
 		A10000000000000A /* AppLauncher.swift in Sources */ = {isa = PBXBuildFile; fileRef = A200000000000014 /* AppLauncher.swift */; };
+		A10000000000000B /* InstalledApps.m in Sources */ = {isa = PBXBuildFile; fileRef = A200000000000016 /* InstalledApps.m */; };
 		A100000000000003 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A200000000000003 /* Assets.xcassets */; };
 		A100000000000004 /* SampleHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = A200000000000004 /* SampleHandler.swift */; };
 		A100000000000005 /* H264Encoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = A200000000000005 /* H264Encoder.swift */; };
@@ -47,6 +48,9 @@
 		A200000000000001 /* UltraMirrorApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UltraMirrorApp.swift; sourceTree = "<group>"; };
 		A200000000000002 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		A200000000000014 /* AppLauncher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLauncher.swift; sourceTree = "<group>"; };
+		A200000000000015 /* InstalledApps.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = InstalledApps.h; sourceTree = "<group>"; };
+		A200000000000016 /* InstalledApps.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = InstalledApps.m; sourceTree = "<group>"; };
+		A200000000000017 /* UltraMirror-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UltraMirror-Bridging-Header.h"; sourceTree = "<group>"; };
 		A200000000000003 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A200000000000004 /* SampleHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleHandler.swift; sourceTree = "<group>"; };
 		A200000000000005 /* H264Encoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = H264Encoder.swift; sourceTree = "<group>"; };
@@ -96,6 +100,9 @@
 				A200000000000001 /* UltraMirrorApp.swift */,
 				A200000000000002 /* ContentView.swift */,
 				A200000000000014 /* AppLauncher.swift */,
+				A200000000000015 /* InstalledApps.h */,
+				A200000000000016 /* InstalledApps.m */,
+				A200000000000017 /* UltraMirror-Bridging-Header.h */,
 				A200000000000003 /* Assets.xcassets */,
 				A200000000000010 /* Info.plist */,
 				A200000000000011 /* UltraMirror.entitlements */,
@@ -235,6 +242,7 @@
 				A100000000000001 /* UltraMirrorApp.swift in Sources */,
 				A100000000000002 /* ContentView.swift in Sources */,
 				A10000000000000A /* AppLauncher.swift in Sources */,
+				A10000000000000B /* InstalledApps.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -318,6 +326,7 @@
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "UltraMirror/UltraMirror-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
 			};
@@ -343,6 +352,7 @@
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "UltraMirror/UltraMirror-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
 			};

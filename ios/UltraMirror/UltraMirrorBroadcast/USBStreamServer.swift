@@ -48,7 +48,7 @@ final class USBStreamServer {
         listener?.cancel()
         let params = NWParameters.tcp
         params.allowLocalEndpointReuse = true
-        params.acceptLocalOnly = true
+        params.acceptLocalOnly = false
         let tcp = params.defaultProtocolStack.transportProtocol as? NWProtocolTCP.Options
         tcp?.noDelay = true
         tcp?.enableKeepalive = true

@@ -6,6 +6,7 @@ struct ContentView: View {
     @State private var query = ""
     @State private var selected: LaunchableApp?
     @State private var didLaunch = false
+    @State private var status = "اختر اللعبة ثم اضغط البث"
 
     private var filtered: [LaunchableApp] {
         let text = query.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -17,30 +18,22 @@ struct ContentView: View {
 
     var body: some View {
         ZStack {
-            LinearGradient(
-                colors: [
-                    Color(red: 0.05, green: 0.07, blue: 0.12),
-                    Color(red: 0.08, green: 0.12, blue: 0.22)
-                ],
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
-            )
-            .ignoresSafeArea()
+            Color(red: 0.05, green: 0.07, blue: 0.12).ignoresSafeArea()
 
-            VStack(spacing: 12) {
+            VStack(spacing: 10) {
                 Text("مرآة USB")
                     .font(.system(size: 28, weight: .bold))
                     .padding(.top, 8)
 
-                Text(selected == nil ? "اختر لعبة أو برنامج، بعدين اضغط البث" : "بعد البث راح يفتح: \(selected!.name)")
+                Text(status)
                     .font(.system(size: 14, weight: .medium))
-                    .foregroundStyle(.white.opacity(0.7))
+                    .foregroundStyle(.white.opacity(0.75))
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, 16)
 
                 HStack {
                     Image(systemName: "magnifyingglass")
-                    TextField("ابحث عن لعبة أو برنامج", text: $query)
+                    TextField("ابحث: كود، تيك توك، يوتيوب...", text: $query)
                         .textInputAutocapitalization(.never)
                 }
                 .padding(10)
@@ -50,6 +43,7 @@ struct ContentView: View {
                 List(filtered) { app in
                     Button {
                         selected = app
+                        status = "مختار: \(app.name). اضغط البث الأحمر"
                     } label: {
                         HStack {
                             VStack(alignment: .leading, spacing: 2) {
@@ -63,8 +57,7 @@ struct ContentView: View {
                             }
                             Spacer()
                             if selected?.bundleID == app.bundleID {
-                                Image(systemName: "checkmark.circle.fill")
-                                    .foregroundStyle(.red)
+                                Image(systemName: "checkmark.circle.fill").foregroundStyle(.red)
                             }
                         }
                     }
@@ -73,13 +66,28 @@ struct ContentView: View {
                 .listStyle(.plain)
                 .background(Color.clear)
 
+                Button("افتح التطبيق الآن") {
+                    guard let selected else {
+                        status = "اختر لعبة من القائمة أولاً"
+                        return
+                    }
+                    status = "يفتح \(selected.name)…"
+                    AppLauncher.open(selected)
+                }
+                .font(.system(size: 16, weight: .semibold))
+                .foregroundStyle(.white)
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 12)
+                .background(Color.white.opacity(0.12), in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+                .padding(.horizontal, 16)
+
                 HStack(spacing: 16) {
                     BroadcastStartButton()
                         .frame(width: 72, height: 72)
                     VStack(alignment: .leading, spacing: 4) {
                         Text("ابدأ البث")
                             .font(.system(size: 16, weight: .bold))
-                        Text("اختر مرآة USB من القائمة")
+                        Text("اختر مرآة USB، وبعدها يفتح التطبيق")
                             .font(.system(size: 12))
                             .foregroundStyle(.white.opacity(0.65))
                     }
@@ -93,11 +101,14 @@ struct ContentView: View {
         .preferredColorScheme(.dark)
         .onAppear {
             apps = AppLauncher.installedApps()
+            if let cod = apps.first(where: { $0.name.localizedCaseInsensitiveContains("call of duty") || $0.bundleID.contains("callofduty") }) {
+                selected = cod
+                status = "مختار: \(cod.name). اضغط البث الأحمر"
+            } else {
+                status = "وجد \(apps.count) برنامج. اختر واحد ثم اضغط البث"
+            }
         }
-        .onReceive(NotificationCenter.default.publisher(for: UIScreen.capturedDidChangeNotification)) { _ in
-            launchSelectedIfNeeded()
-        }
-        .onReceive(NotificationCenter.default.publisher(for: UIApplication.didBecomeActiveNotification)) { _ in
+        .onReceive(Timer.publish(every: 0.25, on: .main, in: .common).autoconnect()) { _ in
             launchSelectedIfNeeded()
         }
     }
@@ -109,7 +120,8 @@ struct ContentView: View {
         }
         guard let selected, !didLaunch else { return }
         didLaunch = true
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.9) {
+        status = "البث شغال، يفتح \(selected.name)…"
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
             AppLauncher.open(selected)
         }
     }
