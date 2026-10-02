@@ -1,0 +1,422 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		A100000000000001 /* UltraMirrorApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A200000000000001 /* UltraMirrorApp.swift */; };
+		A100000000000002 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A200000000000002 /* ContentView.swift */; };
+		A100000000000003 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A200000000000003 /* Assets.xcassets */; };
+		A100000000000004 /* SampleHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = A200000000000004 /* SampleHandler.swift */; };
+		A100000000000005 /* H264Encoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = A200000000000005 /* H264Encoder.swift */; };
+		A100000000000006 /* USBStreamServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A200000000000006 /* USBStreamServer.swift */; };
+		A100000000000007 /* ReplayKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A200000000000007 /* ReplayKit.framework */; };
+		A100000000000008 /* ReplayKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A200000000000007 /* ReplayKit.framework */; };
+		A100000000000009 /* UltraMirrorBroadcast.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = A200000000000008 /* UltraMirrorBroadcast.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		A300000000000001 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A400000000000001 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = A500000000000002;
+			remoteInfo = UltraMirrorBroadcast;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		A600000000000001 /* Embed App Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				A100000000000009 /* UltraMirrorBroadcast.appex in Embed App Extensions */,
+			);
+			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		A200000000000001 /* UltraMirrorApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UltraMirrorApp.swift; sourceTree = "<group>"; };
+		A200000000000002 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		A200000000000003 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		A200000000000004 /* SampleHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleHandler.swift; sourceTree = "<group>"; };
+		A200000000000005 /* H264Encoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = H264Encoder.swift; sourceTree = "<group>"; };
+		A200000000000006 /* USBStreamServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = USBStreamServer.swift; sourceTree = "<group>"; };
+		A200000000000007 /* ReplayKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ReplayKit.framework; path = System/Library/Frameworks/ReplayKit.framework; sourceTree = SDKROOT; };
+		A200000000000008 /* UltraMirrorBroadcast.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = UltraMirrorBroadcast.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		A200000000000009 /* UltraMirror.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = UltraMirror.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A200000000000010 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A200000000000011 /* UltraMirror.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = UltraMirror.entitlements; sourceTree = "<group>"; };
+		A200000000000012 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A200000000000013 /* UltraMirrorBroadcast.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = UltraMirrorBroadcast.entitlements; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		A700000000000001 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A100000000000007 /* ReplayKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A700000000000002 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A100000000000008 /* ReplayKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		A800000000000001 = {
+			isa = PBXGroup;
+			children = (
+				A800000000000002 /* UltraMirror */,
+				A800000000000003 /* UltraMirrorBroadcast */,
+				A800000000000004 /* Frameworks */,
+				A800000000000005 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		A800000000000002 /* UltraMirror */ = {
+			isa = PBXGroup;
+			children = (
+				A200000000000001 /* UltraMirrorApp.swift */,
+				A200000000000002 /* ContentView.swift */,
+				A200000000000003 /* Assets.xcassets */,
+				A200000000000010 /* Info.plist */,
+				A200000000000011 /* UltraMirror.entitlements */,
+			);
+			path = UltraMirror;
+			sourceTree = "<group>";
+		};
+		A800000000000003 /* UltraMirrorBroadcast */ = {
+			isa = PBXGroup;
+			children = (
+				A200000000000004 /* SampleHandler.swift */,
+				A200000000000005 /* H264Encoder.swift */,
+				A200000000000006 /* USBStreamServer.swift */,
+				A200000000000012 /* Info.plist */,
+				A200000000000013 /* UltraMirrorBroadcast.entitlements */,
+			);
+			path = UltraMirrorBroadcast;
+			sourceTree = "<group>";
+		};
+		A800000000000004 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				A200000000000007 /* ReplayKit.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		A800000000000005 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				A200000000000009 /* UltraMirror.app */,
+				A200000000000008 /* UltraMirrorBroadcast.appex */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		A500000000000001 /* UltraMirror */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A900000000000001 /* Build configuration list for PBXNativeTarget "UltraMirror" */;
+			buildPhases = (
+				AA00000000000001 /* Sources */,
+				A700000000000001 /* Frameworks */,
+				AB00000000000001 /* Resources */,
+				A600000000000001 /* Embed App Extensions */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				AC00000000000001 /* PBXTargetDependency */,
+			);
+			name = UltraMirror;
+			productName = UltraMirror;
+			productReference = A200000000000009 /* UltraMirror.app */;
+			productType = "com.apple.product-type.application";
+		};
+		A500000000000002 /* UltraMirrorBroadcast */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A900000000000002 /* Build configuration list for PBXNativeTarget "UltraMirrorBroadcast" */;
+			buildPhases = (
+				AA00000000000002 /* Sources */,
+				A700000000000002 /* Frameworks */,
+				AB00000000000002 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = UltraMirrorBroadcast;
+			productName = UltraMirrorBroadcast;
+			productReference = A200000000000008 /* UltraMirrorBroadcast.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		A400000000000001 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1540;
+				LastUpgradeCheck = 1540;
+				TargetAttributes = {
+					A500000000000001 = {
+						CreatedOnToolsVersion = 15.4;
+					};
+					A500000000000002 = {
+						CreatedOnToolsVersion = 15.4;
+					};
+				};
+			};
+			buildConfigurationList = A900000000000003 /* Build configuration list for PBXProject "UltraMirror" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = ar;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				ar,
+				Base,
+			);
+			mainGroup = A800000000000001;
+			productRefGroup = A800000000000005 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				A500000000000001 /* UltraMirror */,
+				A500000000000002 /* UltraMirrorBroadcast */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		AB00000000000001 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A100000000000003 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AB00000000000002 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		AA00000000000001 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A100000000000001 /* UltraMirrorApp.swift in Sources */,
+				A100000000000002 /* ContentView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AA00000000000002 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A100000000000004 /* SampleHandler.swift in Sources */,
+				A100000000000005 /* H264Encoder.swift in Sources */,
+				A100000000000006 /* USBStreamServer.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		AC00000000000001 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = A500000000000002 /* UltraMirrorBroadcast */;
+			targetProxy = A300000000000001 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		AD00000000000001 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_TESTABILITY = YES;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		AD00000000000002 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		AD00000000000003 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = UltraMirror/UltraMirror.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = UltraMirror/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "مرآة USB";
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ultramirror.app;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		AD00000000000004 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = UltraMirror/UltraMirror.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = UltraMirror/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "مرآة USB";
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ultramirror.app;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+		AD00000000000005 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = UltraMirrorBroadcast/UltraMirrorBroadcast.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = UltraMirrorBroadcast/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ultramirror.app.broadcast;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		AD00000000000006 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = UltraMirrorBroadcast/UltraMirrorBroadcast.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = UltraMirrorBroadcast/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ultramirror.app.broadcast;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		A900000000000001 /* Build configuration list for PBXNativeTarget "UltraMirror" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AD00000000000003 /* Debug */,
+				AD00000000000004 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A900000000000002 /* Build configuration list for PBXNativeTarget "UltraMirrorBroadcast" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AD00000000000005 /* Debug */,
+				AD00000000000006 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A900000000000003 /* Build configuration list for PBXProject "UltraMirror" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AD00000000000001 /* Debug */,
+				AD00000000000002 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = A400000000000001 /* Project object */;
+}
