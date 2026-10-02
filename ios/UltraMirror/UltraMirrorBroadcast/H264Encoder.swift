@@ -59,6 +59,7 @@ final class H264Encoder {
             presentationTimeStamp: pts,
             duration: CMTime(value: 1, timescale: targetFPS),
             frameProperties: properties,
+            sourceFrameRefcon: nil,
             infoFlagsOut: nil
         )
     }
@@ -78,9 +79,7 @@ final class H264Encoder {
             width: width,
             height: height,
             codecType: kCMVideoCodecType_H264,
-            encoderSpecification: [
-                kVTVideoEncoderSpecification_EnableHardwareAcceleratedVideoEncoder: true
-            ] as CFDictionary,
+            encoderSpecification: nil,
             imageBufferAttributes: nil,
             compressedDataAllocator: nil,
             outputCallback: compressionCallback,
