@@ -70,8 +70,8 @@ struct ContentView: View {
                     }
                     .listRowBackground(Color.white.opacity(selected?.bundleID == app.bundleID ? 0.12 : 0.04))
                 }
-                .scrollContentBackground(.hidden)
                 .listStyle(.plain)
+                .background(Color.clear)
 
                 HStack(spacing: 16) {
                     BroadcastStartButton()

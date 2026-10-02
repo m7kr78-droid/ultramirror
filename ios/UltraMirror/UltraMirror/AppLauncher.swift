@@ -15,7 +15,7 @@ enum AppLauncher {
             found[app.bundleID] = app
         }
 
-        for app in catalog where isInstalled(app) {
+        for app in catalog {
             if found[app.bundleID] == nil {
                 found[app.bundleID] = app
             }
@@ -50,10 +50,10 @@ enum AppLauncher {
     }
 
     private static func workspaceApps() -> [LaunchableApp] {
-        guard let workspace else { return [] }
+        guard let space = workspace() else { return [] }
         let selector = NSSelectorFromString("allInstalledApplications")
-        guard workspace.responds(to: selector),
-              let proxies = workspace.perform(selector)?.takeUnretainedValue() as? [NSObject]
+        guard space.responds(to: selector),
+              let proxies = space.perform(selector)?.takeUnretainedValue() as? [NSObject]
         else { return [] }
 
         var apps: [LaunchableApp] = []
@@ -75,10 +75,10 @@ enum AppLauncher {
     }
 
     private static func openWithWorkspace(bundleID: String) -> Bool {
-        guard let workspace else { return false }
+        guard let space = workspace() else { return false }
         let selector = NSSelectorFromString("openApplicationWithBundleID:")
-        guard workspace.responds(to: selector) else { return false }
-        _ = workspace.perform(selector, with: bundleID)
+        guard space.responds(to: selector) else { return false }
+        _ = space.perform(selector, with: bundleID)
         return true
     }
 
