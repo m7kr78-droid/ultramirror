@@ -25,11 +25,13 @@ struct ContentView: View {
                     .font(.system(size: 28, weight: .bold))
                     .padding(.top, 8)
 
-                Text(status)
-                    .font(.system(size: 14, weight: .medium))
+                Text("1) اضغط البث الأحمر واختر مرآة USB\n2) لازم الشريط الأحمر يبقى فوق\n3) بعدين افتح اللعبة. لا تغلق مرآة USB من التطبيقات المفتوحة")
+                    .font(.system(size: 13, weight: .medium))
                     .foregroundStyle(.white.opacity(0.75))
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, 16)
+
+                Text(status)
 
                 HStack {
                     Image(systemName: "magnifyingglass")

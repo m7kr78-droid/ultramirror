@@ -3,11 +3,11 @@ import Network
 
 final class USBStreamServer {
     private let port: UInt16
-    private var listener: NWListener?
     private var connection: NWConnection?
     private let queue = DispatchQueue(label: "com.ultramirror.usb", qos: .userInteractive)
     private var pending = Data()
-    private let maxPendingBytes = 2_000_000
+    private let maxPendingBytes = 1_000_000
+    private var stopped = false
 
     init(port: UInt16) {
         self.port = port
@@ -15,16 +15,16 @@ final class USBStreamServer {
 
     func start() {
         queue.async { [weak self] in
-            self?.startLocked()
+            self?.stopped = false
+            self?.connectLocked()
         }
     }
 
     func stop() {
         queue.async { [weak self] in
+            self?.stopped = true
             self?.connection?.cancel()
             self?.connection = nil
-            self?.listener?.cancel()
-            self?.listener = nil
             self?.pending.removeAll(keepingCapacity: false)
         }
     }
@@ -32,7 +32,7 @@ final class USBStreamServer {
     func send(annexB data: Data, isKey: Bool) {
         queue.async { [weak self] in
             guard let self else { return }
-            guard let connection = self.connection else {
+            guard let connection = self.connection, connection.state == .ready else {
                 if isKey {
                     self.pending = data
                 } else if self.pending.count < self.maxPendingBytes {
@@ -44,43 +44,34 @@ final class USBStreamServer {
         }
     }
 
-    private func startLocked() {
-        listener?.cancel()
-        let params = NWParameters.tcp
-        params.allowLocalEndpointReuse = true
-        params.acceptLocalOnly = false
-        let tcp = params.defaultProtocolStack.transportProtocol as? NWProtocolTCP.Options
+    private func connectLocked() {
+        guard !stopped else { return }
+        connection?.cancel()
+        let parameters = NWParameters.tcp
+        let tcp = parameters.defaultProtocolStack.transportProtocol as? NWProtocolTCP.Options
         tcp?.noDelay = true
-        tcp?.enableKeepalive = true
-        tcp?.connectionTimeout = 2
-
-        do {
-            listener = try NWListener(using: params, on: NWEndpoint.Port(rawValue: port)!)
-        } catch {
-            return
-        }
-
-        listener?.newConnectionHandler = { [weak self] newConnection in
+        let connection = NWConnection(host: "127.0.0.1", port: NWEndpoint.Port(rawValue: port)!, using: parameters)
+        self.connection = connection
+        connection.stateUpdateHandler = { [weak self] state in
             guard let self else { return }
-            self.queue.async {
-                self.connection?.cancel()
-                self.connection = newConnection
-                newConnection.start(queue: self.queue)
+            switch state {
+            case .ready:
                 if !self.pending.isEmpty {
-                    self.write(self.pending, to: newConnection)
+                    self.write(self.pending, to: connection)
                     self.pending.removeAll(keepingCapacity: true)
                 }
-                newConnection.stateUpdateHandler = { [weak self] state in
-                    if case .failed = state {
-                        self?.connection = nil
-                    }
-                    if case .cancelled = state {
-                        self?.connection = nil
+            case .failed, .cancelled:
+                self.connection = nil
+                if !self.stopped {
+                    self.queue.asyncAfter(deadline: .now() + 0.4) {
+                        self.connectLocked()
                     }
                 }
+            default:
+                break
             }
         }
-        listener?.start(queue: queue)
+        connection.start(queue: queue)
     }
 
     private func write(_ data: Data, to connection: NWConnection) {

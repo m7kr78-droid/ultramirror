@@ -4,7 +4,7 @@ import ReplayKit
 @objc(SampleHandler)
 final class SampleHandler: RPBroadcastSampleHandler {
     private let encoder = H264Encoder()
-    private let server = USBStreamServer(port: 17420)
+    private let server = USBStreamServer(port: 17421)
 
     override func broadcastStarted(withSetupInfo setupInfo: [String: NSObject]?) {
         server.start()

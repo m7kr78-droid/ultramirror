@@ -22,6 +22,7 @@ class UltraMirrorApp:
         self.latest = LatestFrame()
         self.player: H264Player | None = None
         self.running = False
+        self.waiting = False
         self.fullscreen = tk.BooleanVar(value=True)
 
         self._build()
@@ -29,7 +30,6 @@ class UltraMirrorApp:
         self.root.after(250, self._tick_status)
 
     def _build(self) -> None:
-        pad = {"padx": 18, "pady": 6}
         title = tk.Label(
             self.root,
             text="مرآة USB",
@@ -86,11 +86,10 @@ class UltraMirrorApp:
         ).pack()
 
         help_text = (
-            "1) ثبت iTunes أو Apple Devices\n"
-            "2) اربط الآيفون بكابل الشحن واضغط Trust\n"
-            "3) افتح تطبيق مرآة USB على الجوال واضغط زر البث\n"
-            "4) ارجع هنا واضغط بدء العرض\n"
-            "Esc للخروج من ملء الشاشة"
+            "أولاً على الجوال: اضغط الزر الأحمر واختر مرآة USB\n"
+            "لازم يظهر شريط أحمر فوق شاشة الآيفون\n"
+            "بعدين هنا اضغط بدء العرض وانتظر\n"
+            "الألعاب مثل كود ما تظهر في قائمة البث — افتحها بعد ما يبدأ التسجيل"
         )
         tk.Label(
             self.root,
@@ -99,7 +98,7 @@ class UltraMirrorApp:
             bg="#10141c",
             font=("Segoe UI", 10),
             justify="center",
-        ).pack(pady=18, **pad)
+        ).pack(padx=18, pady=18)
 
         self.stats = tk.Label(self.root, text="", fg="#cbd5e1", bg="#10141c", font=("Consolas", 11))
         self.stats.pack()
@@ -124,7 +123,7 @@ class UltraMirrorApp:
         self.status.config(text=f"وجد {len(self._devices)} جهاز. ابدأ البث من الجوال ثم اضغط بدء العرض.")
 
     def toggle(self) -> None:
-        if self.running:
+        if self.running or self.waiting:
             self.stop()
         else:
             self.start()
@@ -138,21 +137,44 @@ class UltraMirrorApp:
         if index < 0:
             index = 0
         device = self._devices[index]
-        try:
-            sock = connect_device_port(int(device["device_id"]))
-        except Exception as exc:
-            self.status.config(text=str(exc))
-            return
-        self.latest = LatestFrame()
-        self.player = H264Player(sock, self.latest)
-        self.player.start()
+        self.waiting = True
         self.running = True
         self.connect_btn.config(text="إيقاف")
-        self.status.config(text="متصل عبر USB. نافذة العرض راح تفتح.")
-        threading.Thread(target=self._display_loop, daemon=True).start()
+        self.status.config(text="ينتظر البث من الجوال… اضغط الزر الأحمر على الآيفون واختر مرآة USB.")
+        threading.Thread(target=self._connect_loop, args=(device,), daemon=True).start()
+
+    def _connect_loop(self, device: dict) -> None:
+        deadline = time.time() + 90
+        last_error = "ما بدأ البث بعد."
+        while self.running and time.time() < deadline:
+            try:
+                sock = connect_device_port(int(device["device_id"]))
+            except Exception as exc:
+                last_error = str(exc)
+                remaining = int(deadline - time.time())
+                self.root.after(
+                    0,
+                    lambda r=remaining: self.status.config(
+                        text=f"الجوال مربوط. ينتظر بدء البث من الآيفون… ({r} ث)"
+                    ),
+                )
+                time.sleep(1.0)
+                continue
+            self.waiting = False
+            self.latest = LatestFrame()
+            self.player = H264Player(sock, self.latest)
+            self.player.start()
+            self.root.after(0, lambda: self.status.config(text="الكابل متصل. الآن ابدأ البث من الجوال حتى تظهر الصورة."))
+            self._display_loop()
+            return
+        self.waiting = False
+        if self.running:
+            self.root.after(0, lambda: self.status.config(text=last_error))
+            self.root.after(0, self.stop)
 
     def stop(self) -> None:
         self.running = False
+        self.waiting = False
         if self.player:
             self.player.stop()
             self.player = None
