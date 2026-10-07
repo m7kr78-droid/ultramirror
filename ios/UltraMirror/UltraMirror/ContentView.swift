@@ -210,7 +210,7 @@ struct ContentView: View {
 
     private var buttons: some View {
         VStack(spacing: 10) {
-            actionButton("Apply Dimensions", color: Theme.cyan, text: .black, action: applyDimensions)
+            actionButton("Apply Dimensions", color: Theme.cyan, text: .black) { _ = applyDimensions() }
             actionButton("Launch Game", color: Theme.green, text: .black, action: launchGame)
             actionButton("Restore Display", color: Theme.amber, text: .black, action: restoreDisplay)
         }
