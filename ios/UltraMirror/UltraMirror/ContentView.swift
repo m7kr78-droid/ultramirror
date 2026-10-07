@@ -1,13 +1,57 @@
-import ReplayKit
 import SwiftUI
 
+private enum Theme {
+    static let bg = Color(red: 0.03, green: 0.04, blue: 0.05)
+    static let card = Color(red: 0.07, green: 0.09, blue: 0.12)
+    static let line = Color(red: 0.16, green: 0.20, blue: 0.27)
+    static let text = Color.white
+    static let muted = Color.white.opacity(0.55)
+    static let cyan = Color(red: 0.24, green: 0.88, blue: 1.0)
+    static let green = Color(red: 0.24, green: 1.0, blue: 0.60)
+    static let amber = Color(red: 1.0, green: 0.69, blue: 0.13)
+}
+
+private struct SizePreset: Identifiable, Hashable {
+    var id: String { title }
+    let title: String
+    let width: Int
+    let height: Int
+}
+
 struct ContentView: View {
+    @AppStorage("width") private var widthText = ""
+    @AppStorage("height") private var heightText = ""
+    @AppStorage("stretch") private var stretch = true
+    @AppStorage("lastBundle") private var lastBundle = ""
+
     @State private var apps: [LaunchableApp] = []
     @State private var query = ""
     @State private var selected: LaunchableApp?
-    @State private var didLaunch = false
-    @State private var capturedSince: Date?
-    @State private var status = "أولاً ابدأ البث. لا تفتح اللعبة قبل الشريط الأحمر"
+    @State private var status = "Set stretch, apply size, then launch a game."
+    @State private var statusError = false
+    @State private var presetTitle = "Native"
+
+    private var nativeWidth: Int { ResolutionCanvas.nativeWidth() }
+    private var nativeHeight: Int { ResolutionCanvas.nativeHeight() }
+
+    private var presets: [SizePreset] {
+        var items: [SizePreset] = [
+            .init(title: "Native", width: nativeWidth, height: nativeHeight),
+            .init(title: "1440 x 1080  (4:3 stretch)", width: 1440, height: 1080),
+            .init(title: "1280 x 960  (4:3 stretch)", width: 1280, height: 960),
+            .init(title: "1280 x 1024  (5:4)", width: 1280, height: 1024),
+            .init(title: "1920 x 1080  (16:9)", width: 1920, height: 1080),
+            .init(title: "1600 x 900  (16:9)", width: 1600, height: 900),
+            .init(title: "1280 x 720  (16:9)", width: 1280, height: 720),
+            .init(title: "1024 x 768  (4:3)", width: 1024, height: 768),
+            .init(title: "960 x 720  (4:3)", width: 960, height: 720),
+        ]
+        let native = (nativeWidth, nativeHeight)
+        if !items.contains(where: { ($0.width, $0.height) == native }) {
+            items.insert(.init(title: "\(nativeWidth) x \(nativeHeight)", width: nativeWidth, height: nativeHeight), at: 1)
+        }
+        return items
+    }
 
     private var filtered: [LaunchableApp] {
         let text = query.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -19,155 +63,273 @@ struct ContentView: View {
 
     var body: some View {
         ZStack {
-            Color(red: 0.05, green: 0.07, blue: 0.12).ignoresSafeArea()
+            Theme.bg.ignoresSafeArea()
 
-            VStack(spacing: 10) {
-                Text("مرآة USB")
-                    .font(.system(size: 28, weight: .bold))
-                    .padding(.top, 8)
-
-                Text("مهم: لا تضغط افتح اللعبة إلا بعد ما يظهر الشريط الأحمر فوق الشاشة")
-                    .font(.system(size: 14, weight: .semibold))
-                    .foregroundStyle(.red.opacity(0.95))
-                    .multilineTextAlignment(.center)
-                    .padding(.horizontal, 16)
-
-                Text(status)
-                    .font(.system(size: 13, weight: .medium))
-                    .foregroundStyle(.white.opacity(0.8))
-                    .multilineTextAlignment(.center)
-                    .padding(.horizontal, 16)
-
-                HStack {
-                    Image(systemName: "magnifyingglass")
-                    TextField("ابحث عن لعبة", text: $query)
-                        .textInputAutocapitalization(.never)
+            VStack(alignment: .leading, spacing: 0) {
+                header
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 18) {
+                        dimensionsCard
+                        gameCard
+                        buttons
+                        Text(status)
+                            .font(.system(size: 13, weight: .medium))
+                            .foregroundStyle(statusError ? Color.red.opacity(0.95) : Theme.muted)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                    .padding(.horizontal, 18)
+                    .padding(.top, 16)
+                    .padding(.bottom, 24)
                 }
-                .padding(10)
-                .background(.white.opacity(0.08), in: RoundedRectangle(cornerRadius: 12, style: .continuous))
-                .padding(.horizontal, 16)
+            }
+        }
+        .preferredColorScheme(.dark)
+        .onAppear(perform: setup)
+    }
 
-                List(filtered) { app in
+    private var header: some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Text("by sonic")
+                .font(.system(size: 32, weight: .bold, design: .rounded))
+                .foregroundStyle(Theme.cyan)
+            Text("RESOLUTION LAUNCHER")
+                .font(.system(size: 12, weight: .bold))
+                .tracking(1.6)
+                .foregroundStyle(Theme.text)
+            Rectangle()
+                .fill(Theme.cyan)
+                .frame(height: 2)
+                .padding(.top, 8)
+        }
+        .padding(.horizontal, 18)
+        .padding(.top, 10)
+    }
+
+    private var dimensionsCard: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            sectionTitle("DIMENSIONS")
+            HStack(spacing: 10) {
+                numberField("Width", text: $widthText)
+                numberField("Height", text: $heightText)
+            }
+            VStack(alignment: .leading, spacing: 6) {
+                Text("Preset")
+                    .font(.system(size: 12, weight: .medium))
+                    .foregroundStyle(Theme.muted)
+                Menu {
+                    ForEach(presets) { item in
+                        Button(item.title) {
+                            presetTitle = item.title
+                            widthText = String(item.width)
+                            heightText = String(item.height)
+                        }
+                    }
+                } label: {
+                    HStack {
+                        Text(presetTitle)
+                            .foregroundStyle(Theme.text)
+                        Spacer()
+                        Image(systemName: "chevron.down")
+                            .foregroundStyle(Theme.cyan)
+                    }
+                    .padding(12)
+                    .background(Theme.bg, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 12, style: .continuous)
+                            .stroke(Theme.line, lineWidth: 1)
+                    )
+                }
+            }
+            Toggle(isOn: $stretch) {
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("Stretch")
+                        .foregroundStyle(Theme.text)
+                        .font(.system(size: 16, weight: .semibold))
+                    Text("Fill the screen. Image may distort.")
+                        .foregroundStyle(Theme.muted)
+                        .font(.system(size: 12))
+                }
+            }
+            .tint(Theme.cyan)
+        }
+        .padding(14)
+        .background(Theme.card, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+    }
+
+    private var gameCard: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            sectionTitle("GAME")
+            HStack {
+                Image(systemName: "magnifyingglass").foregroundStyle(Theme.muted)
+                TextField("Search games", text: $query)
+                    .textInputAutocapitalization(.never)
+                    .foregroundStyle(Theme.text)
+            }
+            .padding(10)
+            .background(Theme.bg, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+
+            if let selected {
+                Text("Selected: \(selected.name)")
+                    .font(.system(size: 13, weight: .semibold))
+                    .foregroundStyle(Theme.cyan)
+            }
+
+            VStack(spacing: 0) {
+                ForEach(filtered.prefix(40)) { app in
                     Button {
                         selected = app
-                        status = "مختار: \(app.name). اضغط البث الأحمر أولاً"
+                        lastBundle = app.bundleID
+                        setStatus("Selected \(app.name). Apply dimensions, then launch.")
                     } label: {
                         HStack {
                             VStack(alignment: .leading, spacing: 2) {
                                 Text(app.name)
-                                    .foregroundStyle(.white)
+                                    .foregroundStyle(Theme.text)
                                     .font(.system(size: 16, weight: .semibold))
                                 Text(app.bundleID)
-                                    .foregroundStyle(.white.opacity(0.45))
+                                    .foregroundStyle(Theme.muted)
                                     .font(.system(size: 11))
                                     .lineLimit(1)
                             }
                             Spacer()
                             if selected?.bundleID == app.bundleID {
-                                Image(systemName: "checkmark.circle.fill").foregroundStyle(.red)
+                                Image(systemName: "checkmark.circle.fill").foregroundStyle(Theme.cyan)
                             }
                         }
+                        .padding(.vertical, 10)
                     }
-                    .listRowBackground(Color.white.opacity(selected?.bundleID == app.bundleID ? 0.12 : 0.04))
+                    if app.bundleID != filtered.prefix(40).last?.bundleID {
+                        Rectangle().fill(Theme.line).frame(height: 1)
+                    }
                 }
-                .listStyle(.plain)
-                .background(Color.clear)
+            }
+        }
+        .padding(14)
+        .background(Theme.card, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+    }
 
-                HStack(spacing: 16) {
-                    BroadcastStartButton()
-                        .frame(width: 80, height: 80)
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text("1) ابدأ البث")
-                            .font(.system(size: 16, weight: .bold))
-                        Text("اضغط الدائرة واختر مرآة USB ثم Start Broadcast")
-                            .font(.system(size: 12))
-                            .foregroundStyle(.white.opacity(0.65))
-                    }
-                    Spacer()
-                }
-                .padding(.horizontal, 20)
+    private var buttons: some View {
+        VStack(spacing: 10) {
+            actionButton("Apply Dimensions", color: Theme.cyan, text: .black, action: applyDimensions)
+            actionButton("Launch Game", color: Theme.green, text: .black, action: launchGame)
+            actionButton("Restore Display", color: Theme.amber, text: .black, action: restoreDisplay)
+        }
+    }
 
-                Button("2) افتح اللعبة بعد الشريط الأحمر") {
-                    guard UIScreen.main.isCaptured else {
-                        status = "البث ما بدأ. اضغط الدائرة الحمراء واختر مرآة USB"
-                        return
-                    }
-                    guard let selected else {
-                        status = "اختر لعبة من القائمة"
-                        return
-                    }
-                    status = "يفتح \(selected.name)"
-                    AppLauncher.open(selected)
-                }
-                .font(.system(size: 16, weight: .semibold))
-                .foregroundStyle(.white)
+    private func sectionTitle(_ title: String) -> some View {
+        Text(title)
+            .font(.system(size: 11, weight: .bold))
+            .tracking(1.2)
+            .foregroundStyle(Theme.muted)
+    }
+
+    private func numberField(_ title: String, text: Binding<String>) -> some View {
+        VStack(alignment: .leading, spacing: 6) {
+            Text(title)
+                .font(.system(size: 12, weight: .medium))
+                .foregroundStyle(Theme.muted)
+            TextField(title, text: text)
+                .keyboardType(.numberPad)
+                .multilineTextAlignment(.center)
+                .font(.system(size: 20, weight: .semibold, design: .rounded))
+                .foregroundStyle(Theme.text)
+                .padding(.vertical, 10)
+                .background(Theme.bg, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 12, style: .continuous)
+                        .stroke(Theme.line, lineWidth: 1)
+                )
+        }
+    }
+
+    private func actionButton(_ title: String, color: Color, text: Color, action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            Text(title)
+                .font(.system(size: 17, weight: .bold))
+                .foregroundStyle(text)
                 .frame(maxWidth: .infinity)
-                .padding(.vertical, 12)
-                .background(Color.red.opacity(0.85), in: RoundedRectangle(cornerRadius: 12, style: .continuous))
-                .padding(.horizontal, 16)
-                .padding(.bottom, 12)
-            }
-        }
-        .environment(\.layoutDirection, .rightToLeft)
-        .preferredColorScheme(.dark)
-        .onAppear {
-            apps = AppLauncher.installedApps()
-            selected = apps.first(where: { $0.bundleID.contains("callofduty") || $0.name.localizedCaseInsensitiveContains("call of duty") })
-            status = "اضغط الدائرة الحمراء. لا تفتح كود قبل الشريط الأحمر"
-        }
-        .onReceive(Timer.publish(every: 0.25, on: .main, in: .common).autoconnect()) { _ in
-            launchAfterBroadcastSettles()
+                .padding(.vertical, 14)
+                .background(color, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
         }
     }
 
-    private func launchAfterBroadcastSettles() {
-        if !UIScreen.main.isCaptured {
-            capturedSince = nil
-            didLaunch = false
+    private func setup() {
+        if widthText.isEmpty { widthText = String(nativeWidth) }
+        if heightText.isEmpty { heightText = String(nativeHeight) }
+        apps = AppLauncher.installedApps()
+        selected = apps.first(where: { $0.bundleID == lastBundle })
+            ?? apps.first(where: { $0.bundleID.contains("callofduty") || $0.name.localizedCaseInsensitiveContains("call of duty") })
+        if let selected {
+            lastBundle = selected.bundleID
+        }
+        syncPresetTitle()
+        setStatus("Native \(nativeWidth) x \(nativeHeight). Pick size, stretch, then a game.")
+    }
+
+    private func syncPresetTitle() {
+        let width = Int(widthText) ?? nativeWidth
+        let height = Int(heightText) ?? nativeHeight
+        if let match = presets.first(where: { $0.width == width && $0.height == height }) {
+            presetTitle = match.title
+        } else {
+            presetTitle = "Custom  \(width) x \(height)"
+        }
+    }
+
+    private func parsedSize() -> (Int, Int)? {
+        guard let width = Int(widthText.trimmingCharacters(in: .whitespaces)),
+              let height = Int(heightText.trimmingCharacters(in: .whitespaces))
+        else {
+            setStatus("Width and height must be numbers.", error: true)
+            return nil
+        }
+        return (width, height)
+    }
+
+    @discardableResult
+    private func applyDimensions() -> Bool {
+        guard let (width, height) = parsedSize() else { return false }
+        syncPresetTitle()
+        do {
+            try ResolutionCanvas.applyWidth(width, height: height, stretch: stretch)
+            setStatus("Applied \(width) x \(height)\(stretch ? " stretch" : "").")
+            return true
+        } catch {
+            setStatus(error.localizedDescription, error: true)
+            return false
+        }
+    }
+
+    private func launchGame() {
+        guard let selected else {
+            setStatus("Select a game first.", error: true)
             return
         }
-        if capturedSince == nil {
-            capturedSince = Date()
-            status = "البث بدأ. انتظر الشريط الأحمر…"
-            return
-        }
-        guard let capturedSince, Date().timeIntervalSince(capturedSince) >= 3 else { return }
-        guard let selected, !didLaunch else { return }
-        didLaunch = true
-        status = "الشريط الأحمر ظاهر، يفتح \(selected.name)"
+        let applied = applyDimensions()
         AppLauncher.open(selected)
-    }
-}
-
-struct BroadcastStartButton: UIViewRepresentable {
-    func makeUIView(context: Context) -> RPSystemBroadcastPickerView {
-        let picker = RPSystemBroadcastPickerView(frame: CGRect(x: 0, y: 0, width: 80, height: 80))
-        picker.preferredExtension = Self.extensionBundleID()
-        picker.showsMicrophoneButton = false
-        picker.backgroundColor = .clear
-        if let button = picker.subviews.first(where: { $0 is UIButton }) as? UIButton {
-            button.imageView?.tintColor = .white
-            button.tintColor = .white
-            button.backgroundColor = UIColor(red: 0.86, green: 0.15, blue: 0.18, alpha: 1)
-            button.layer.cornerRadius = 40
-            button.clipsToBounds = true
-            button.frame = picker.bounds
+        if applied {
+            setStatus("Opening \(selected.name) at \(widthText) x \(heightText)\(stretch ? " stretch" : "").")
+        } else {
+            setStatus("iOS blocked the resolution change. Opening \(selected.name) at native size.", error: true)
         }
-        return picker
     }
 
-    func updateUIView(_ uiView: RPSystemBroadcastPickerView, context: Context) {}
-
-    private static func extensionBundleID() -> String {
-        if let plugins = Bundle.main.builtInPlugInsURL,
-           let items = try? FileManager.default.contentsOfDirectory(at: plugins, includingPropertiesForKeys: nil) {
-            for item in items where item.pathExtension == "appex" {
-                if let bundle = Bundle(url: item), let identifier = bundle.bundleIdentifier {
-                    return identifier
-                }
-            }
+    private func restoreDisplay() {
+        widthText = String(nativeWidth)
+        heightText = String(nativeHeight)
+        stretch = false
+        syncPresetTitle()
+        do {
+            try ResolutionCanvas.restoreNative()
+            setStatus("Restored native \(nativeWidth) x \(nativeHeight).")
+        } catch {
+            setStatus(error.localizedDescription, error: true)
         }
-        return (Bundle.main.bundleIdentifier ?? "com.ultramirror.app") + ".broadcast"
+    }
+
+    private func setStatus(_ text: String, error: Bool = false) {
+        status = text
+        statusError = error
     }
 }
 
