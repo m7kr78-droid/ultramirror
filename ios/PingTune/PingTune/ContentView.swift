@@ -160,8 +160,11 @@ struct ContentView: View {
                     setStatus("Select a game first.", error: true)
                     return
                 }
-                AppLauncher.open(selected)
-                setStatus("Opening \(selected.name).")
+                if AppLauncher.open(selected) {
+                    setStatus("Opening \(selected.name).")
+                } else {
+                    setStatus("\(selected.name) is not installed, so it cannot open.", error: true)
+                }
             }
         }
     }

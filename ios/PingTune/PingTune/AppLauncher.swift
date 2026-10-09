@@ -42,19 +42,21 @@ enum AppLauncher {
         return unique.values.sorted { $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending }
     }
 
-    static func open(_ app: LaunchableApp) {
-        if let scheme = app.urlScheme, let url = URL(string: scheme) {
-            UIApplication.shared.open(url)
-            return
-        }
+    @discardableResult
+    static func open(_ app: LaunchableApp) -> Bool {
         var identifiers = [app.bundleID]
         if let team = teamIdentifier(), !app.bundleID.contains(team) {
-            identifiers.append("\(team).\(app.bundleID).\(team)")
             identifiers.append("\(team).\(app.bundleID)")
+            identifiers.append("\(team).\(app.bundleID).\(team)")
         }
-        for identifier in identifiers {
-            InstalledApps.openBundleID(identifier)
+        for identifier in identifiers where InstalledApps.openBundleID(identifier) {
+            return true
         }
+        if let scheme = app.urlScheme, let url = URL(string: scheme), UIApplication.shared.canOpenURL(url) {
+            UIApplication.shared.open(url)
+            return true
+        }
+        return false
     }
 
     private static func teamIdentifier() -> String? {

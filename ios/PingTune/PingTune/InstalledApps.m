@@ -16,8 +16,20 @@
     id workspace = [wsClass performSelector:NSSelectorFromString(@"defaultWorkspace")];
     SEL openSel = NSSelectorFromString(@"openApplicationWithBundleID:");
     if ([workspace respondsToSelector:openSel]) {
-        [workspace performSelector:openSel withObject:bundleID];
-        return YES;
+        NSMethodSignature *signature = [workspace methodSignatureForSelector:openSel];
+        NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:signature];
+        [invocation setTarget:workspace];
+        [invocation setSelector:openSel];
+        NSString *identifier = bundleID;
+        [invocation setArgument:&identifier atIndex:2];
+        [invocation invoke];
+        if (signature.methodReturnLength == sizeof(BOOL)) {
+            BOOL result = NO;
+            [invocation getReturnValue:&result];
+            if (result) {
+                return YES;
+            }
+        }
     }
 
     UIApplication *application = [UIApplication sharedApplication];
