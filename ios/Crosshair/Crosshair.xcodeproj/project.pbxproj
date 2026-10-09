@@ -1,0 +1,277 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		B100000000000001 /* CrosshairApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B200000000000001 /* CrosshairApp.swift */; };
+		B100000000000002 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B200000000000002 /* ContentView.swift */; };
+		B100000000000003 /* CrosshairStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = B200000000000003 /* CrosshairStyle.swift */; };
+		B100000000000004 /* CrosshairCanvas.swift in Sources */ = {isa = PBXBuildFile; fileRef = B200000000000004 /* CrosshairCanvas.swift */; };
+		B100000000000005 /* OverlayController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B200000000000005 /* OverlayController.swift */; };
+		B100000000000006 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B200000000000006 /* Assets.xcassets */; };
+		B100000000000007 /* AVKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B200000000000007 /* AVKit.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		B200000000000001 /* CrosshairApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrosshairApp.swift; sourceTree = "<group>"; };
+		B200000000000002 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		B200000000000003 /* CrosshairStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrosshairStyle.swift; sourceTree = "<group>"; };
+		B200000000000004 /* CrosshairCanvas.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrosshairCanvas.swift; sourceTree = "<group>"; };
+		B200000000000005 /* OverlayController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverlayController.swift; sourceTree = "<group>"; };
+		B200000000000006 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		B200000000000007 /* AVKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVKit.framework; path = System/Library/Frameworks/AVKit.framework; sourceTree = SDKROOT; };
+		B200000000000008 /* Crosshair.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Crosshair.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		B200000000000009 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B200000000000010 /* Crosshair.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Crosshair.entitlements; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		B700000000000001 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B100000000000007 /* AVKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		B800000000000001 = {
+			isa = PBXGroup;
+			children = (
+				B800000000000002 /* Crosshair */,
+				B800000000000003 /* Frameworks */,
+				B800000000000004 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		B800000000000002 /* Crosshair */ = {
+			isa = PBXGroup;
+			children = (
+				B200000000000001 /* CrosshairApp.swift */,
+				B200000000000002 /* ContentView.swift */,
+				B200000000000003 /* CrosshairStyle.swift */,
+				B200000000000004 /* CrosshairCanvas.swift */,
+				B200000000000005 /* OverlayController.swift */,
+				B200000000000006 /* Assets.xcassets */,
+				B200000000000009 /* Info.plist */,
+				B200000000000010 /* Crosshair.entitlements */,
+			);
+			path = Crosshair;
+			sourceTree = "<group>";
+		};
+		B800000000000003 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				B200000000000007 /* AVKit.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		B800000000000004 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				B200000000000008 /* Crosshair.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		B500000000000001 /* Crosshair */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B900000000000001 /* Build configuration list for PBXNativeTarget "Crosshair" */;
+			buildPhases = (
+				BA00000000000001 /* Sources */,
+				B700000000000001 /* Frameworks */,
+				BB00000000000001 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Crosshair;
+			productName = Crosshair;
+			productReference = B200000000000008 /* Crosshair.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		B400000000000001 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1540;
+				LastUpgradeCheck = 1540;
+				TargetAttributes = {
+					B500000000000001 = {
+						CreatedOnToolsVersion = 15.4;
+					};
+				};
+			};
+			buildConfigurationList = B900000000000002 /* Build configuration list for PBXProject "Crosshair" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = B800000000000001;
+			productRefGroup = B800000000000004 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				B500000000000001 /* Crosshair */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		BB00000000000001 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B100000000000006 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		BA00000000000001 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B100000000000001 /* CrosshairApp.swift in Sources */,
+				B100000000000002 /* ContentView.swift in Sources */,
+				B100000000000003 /* CrosshairStyle.swift in Sources */,
+				B100000000000004 /* CrosshairCanvas.swift in Sources */,
+				B100000000000005 /* OverlayController.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		BD00000000000001 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_TESTABILITY = YES;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		BD00000000000002 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		BD00000000000003 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Crosshair/Crosshair.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = Crosshair/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "by sonic";
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.sonic.crosshair;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		BD00000000000004 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Crosshair/Crosshair.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = Crosshair/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "by sonic";
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.sonic.crosshair;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		B900000000000001 /* Build configuration list for PBXNativeTarget "Crosshair" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BD00000000000003 /* Debug */,
+				BD00000000000004 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		B900000000000002 /* Build configuration list for PBXProject "Crosshair" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BD00000000000001 /* Debug */,
+				BD00000000000002 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = B400000000000001 /* Project object */;
+}

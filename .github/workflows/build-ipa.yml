@@ -20,3 +20,11 @@ jobs:
         with:
           name: UltraMirror.ipa
           path: ios/UltraMirror/UltraMirror.ipa
+
+      - name: Build crosshair IPA
+        run: bash ios/Crosshair/build-ipa.sh
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Crosshair.ipa
+          path: ios/Crosshair/Crosshair.ipa
