@@ -139,8 +139,14 @@ struct ContentView: View {
     private var actions: some View {
         VStack(spacing: 10) {
             button("Apply DNS", color: Theme.cyan, text: .black) {
-                ConnectionTune.installDNS(dns)
-                setStatus("Allow the profile, then open Settings and install by sonic \(dns.title).")
+                setStatus("Opening the profile...")
+                ConnectionTune.installDNS(dns) { error in
+                    if let error {
+                        setStatus(error, error: true)
+                    } else {
+                        setStatus("Tap Allow. Then Settings, General, VPN & Device Management, and install by sonic.")
+                    }
+                }
             }
             button(testing ? "Testing..." : "Test Connection", color: Theme.card, text: Theme.text) {
                 guard !testing else { return }

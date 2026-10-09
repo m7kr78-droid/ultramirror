@@ -61,11 +61,16 @@ enum ConnectionTune {
         }
     }
 
-    static func installDNS(_ choice: DNSChoice) {
+    static func installDNS(_ choice: DNSChoice, completion: @escaping (String?) -> Void) {
         let body = profile(choice).data(using: .utf8) ?? Data()
         ProfileServer.shared.serve(body) { url in
-            guard let url else { return }
-            UIApplication.shared.open(url)
+            guard let url else {
+                completion("The profile server did not start.")
+                return
+            }
+            UIApplication.shared.open(url, options: [:]) { opened in
+                completion(opened ? nil : "Safari blocked the profile page.")
+            }
         }
     }
 
@@ -100,36 +105,86 @@ enum ConnectionTune {
 final class ProfileServer {
     static let shared = ProfileServer()
     private var listener: NWListener?
-    private let port: UInt16 = 8941
+    private var task = UIBackgroundTaskIdentifier.invalid
+    private var didFinish = false
 
     func serve(_ body: Data, completion: @escaping (URL?) -> Void) {
         listener?.cancel()
-        guard let listener = try? NWListener(using: .tcp, on: NWEndpoint.Port(rawValue: port)!) else {
-            completion(nil)
+        didFinish = false
+        startBackgroundTask()
+
+        let parameters = NWParameters.tcp
+        parameters.allowLocalEndpointReuse = true
+        guard let port = NWEndpoint.Port(rawValue: 8941),
+              let listener = try? NWListener(using: parameters, on: port) else {
+            finish(nil, completion)
             return
         }
+
         listener.newConnectionHandler = { connection in
             connection.start(queue: .global())
-            connection.receive(minimumIncompleteLength: 1, maximumLength: 8192) { _, _, _, _ in
-                let header = """
-                HTTP/1.1 200 OK\r
-                Content-Type: application/x-apple-aspen-config\r
-                Content-Length: \(body.count)\r
-                Connection: close\r
-                \r
-
-                """
-                var response = Data(header.utf8)
-                response.append(body)
-                connection.send(content: response, completion: .contentProcessed { _ in
-                    connection.cancel()
-                })
+            self.receive(connection, body: body)
+        }
+        listener.stateUpdateHandler = { state in
+            switch state {
+            case .ready:
+                self.finish(URL(string: "http://127.0.0.1:8941/dns.mobileconfig"), completion)
+            case .failed:
+                self.finish(nil, completion)
+            default:
+                break
             }
         }
         listener.start(queue: .global())
         self.listener = listener
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) {
-            completion(URL(string: "http://127.0.0.1:\(self.port)/dns.mobileconfig"))
+    }
+
+    private func receive(_ connection: NWConnection, body: Data) {
+        connection.receive(minimumIncompleteLength: 1, maximumLength: 8192) { _, _, isComplete, error in
+            let header = [
+                "HTTP/1.1 200 OK",
+                "Content-Type: application/x-apple-aspen-config",
+                "Content-Disposition: attachment; filename=\"dns.mobileconfig\"",
+                "Content-Length: \(body.count)",
+                "Connection: close",
+                "",
+                "",
+            ].joined(separator: "\r\n")
+            var response = Data(header.utf8)
+            response.append(body)
+            connection.send(content: response, completion: .contentProcessed { _ in
+                connection.cancel()
+            })
+            if isComplete || error != nil {
+                connection.cancel()
+            }
         }
+    }
+
+    private func finish(_ url: URL?, _ completion: @escaping (URL?) -> Void) {
+        objc_sync_enter(self)
+        let first = !didFinish
+        didFinish = true
+        objc_sync_exit(self)
+        guard first else { return }
+        DispatchQueue.main.async {
+            completion(url)
+        }
+    }
+
+    private func startBackgroundTask() {
+        if task != .invalid { return }
+        task = UIApplication.shared.beginBackgroundTask { [weak self] in
+            self?.endBackgroundTask()
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 25) { [weak self] in
+            self?.endBackgroundTask()
+        }
+    }
+
+    private func endBackgroundTask() {
+        guard task != .invalid else { return }
+        UIApplication.shared.endBackgroundTask(task)
+        task = .invalid
     }
 }
