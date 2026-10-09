@@ -86,7 +86,7 @@ struct CrosshairStyle: Equatable, Codable, Identifiable {
 
     static let `default` = CrosshairStyle(
         id: 0,
-        shape: .plusGap,
+        shape: .microDot,
         colorID: "lime",
         length: 18,
         thickness: 2,

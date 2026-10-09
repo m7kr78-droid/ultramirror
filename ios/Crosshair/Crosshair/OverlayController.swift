@@ -35,18 +35,25 @@ final class OverlayController: NSObject, ObservableObject {
             return
         }
 
-        let pipVC = OverlayPiPViewController(style: style)
+        let pipVC = OverlayPiPViewController(style: style.asDot)
         pipVC.view.backgroundColor = .clear
-        pipVC.preferredContentSize = CGSize(width: 120, height: 120)
+        pipVC.view.isOpaque = false
+        pipVC.preferredContentSize = CGSize(width: 36, height: 36)
 
         let host = UIViewController()
         host.view.backgroundColor = .clear
         host.view.isUserInteractionEnabled = false
-        let source = UIView(frame: CGRect(x: 0, y: 0, width: 2, height: 2))
+        let side: CGFloat = 36
+        let source = UIView(frame: CGRect(
+            x: (root.bounds.width - side) / 2,
+            y: (root.bounds.height - side) / 2,
+            width: side,
+            height: side
+        ))
         source.backgroundColor = .clear
+        source.isOpaque = false
         host.view.addSubview(source)
         root.addSubview(host.view)
-        host.didMove(toParent: nil)
         hostController = host
 
         let content = AVPictureInPictureController.ContentSource(
@@ -58,10 +65,38 @@ final class OverlayController: NSObject, ObservableObject {
         controller.canStartPictureInPictureAutomaticallyFromInline = true
         pip = controller
 
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) { [weak self] in
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) { [weak self] in
             controller.startPictureInPicture()
             self?.isActive = true
-            self?.status = "Overlay on. Open your game, then drag the window to the center."
+            self?.status = "Dot is on, centered. Open the game."
+            self?.keepCentered()
+        }
+    }
+
+    private func keepCentered() {
+        for delay in [0.4, 0.8, 1.2, 1.8, 2.6] {
+            DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
+                Self.centerOverlayWindows()
+            }
+        }
+    }
+
+    private static func centerOverlayWindows() {
+        let scenes = UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }
+        for scene in scenes {
+            let screen = scene.screen.bounds
+            for window in scene.windows {
+                let name = NSStringFromClass(type(of: window))
+                let looksLikeOverlay = name.contains("PictureInPicture") || name.contains("PGHosted") || name.contains("AVKit")
+                guard looksLikeOverlay, window.frame.width < screen.width * 0.6 else { continue }
+                window.backgroundColor = .clear
+                window.isOpaque = false
+                let size = window.frame.size
+                window.frame.origin = CGPoint(
+                    x: (screen.width - size.width) / 2,
+                    y: (screen.height - size.height) / 2
+                )
+            }
         }
     }
 
@@ -84,7 +119,8 @@ final class OverlayController: NSObject, ObservableObject {
 extension OverlayController: AVPictureInPictureControllerDelegate {
     func pictureInPictureControllerDidStartPictureInPicture(_ pictureInPictureController: AVPictureInPictureController) {
         isActive = true
-        status = "Overlay on. Open your game, then drag the window to the center."
+        status = "Dot is on, centered. Open the game."
+        Self.centerOverlayWindows()
     }
 
     func pictureInPictureControllerDidStopPictureInPicture(_ pictureInPictureController: AVPictureInPictureController) {
@@ -105,7 +141,7 @@ extension OverlayController: AVPictureInPictureControllerDelegate {
 
 final class OverlayPiPViewController: AVPictureInPictureVideoCallViewController {
     private let style: CrosshairStyle
-    private var hosting: UIHostingController<CrosshairCanvas>?
+    private let dot = CenterDotView()
 
     init(style: CrosshairStyle) {
         self.style = style
@@ -119,20 +155,65 @@ final class OverlayPiPViewController: AVPictureInPictureVideoCallViewController 
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .clear
-        let canvas = CrosshairCanvas(style: style, previewBackground: false)
-        let host = UIHostingController(rootView: canvas)
-        host.view.backgroundColor = .clear
-        host.view.translatesAutoresizingMaskIntoConstraints = false
-        addChild(host)
-        view.addSubview(host.view)
+        view.isOpaque = false
+        dot.translatesAutoresizingMaskIntoConstraints = false
+        dot.dotColor = UIColor(style.color)
+        dot.diameter = CGFloat(min(max(style.thickness * 3.2, 4), 14))
+        view.addSubview(dot)
         NSLayoutConstraint.activate([
-            host.view.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            host.view.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            host.view.topAnchor.constraint(equalTo: view.topAnchor),
-            host.view.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            dot.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            dot.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            dot.topAnchor.constraint(equalTo: view.topAnchor),
+            dot.bottomAnchor.constraint(equalTo: view.bottomAnchor),
         ])
-        host.didMove(toParent: self)
-        hosting = host
+    }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        clearBackgrounds(from: view)
+    }
+
+    private func clearBackgrounds(from view: UIView) {
+        view.backgroundColor = .clear
+        view.isOpaque = false
+        view.subviews.forEach(clearBackgrounds)
+    }
+}
+
+final class CenterDotView: UIView {
+    var dotColor: UIColor = .green
+    var diameter: CGFloat = 8
+
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        backgroundColor = .clear
+        isOpaque = false
+        contentMode = .redraw
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    override func draw(_ rect: CGRect) {
+        let side = min(diameter, min(bounds.width, bounds.height) * 0.45)
+        let circle = UIBezierPath(ovalIn: CGRect(
+            x: bounds.midX - side / 2,
+            y: bounds.midY - side / 2,
+            width: side,
+            height: side
+        ))
+        dotColor.setFill()
+        circle.fill()
+    }
+}
+
+private extension CrosshairStyle {
+    var asDot: CrosshairStyle {
+        var copy = self
+        copy.shape = .microDot
+        copy.outline = false
+        return copy
     }
 }
 
