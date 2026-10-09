@@ -28,3 +28,11 @@ jobs:
         with:
           name: Crosshair.ipa
           path: ios/Crosshair/Crosshair.ipa
+
+      - name: Build ping tune IPA
+        run: bash ios/PingTune/build-ipa.sh
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: PingTune.ipa
+          path: ios/PingTune/PingTune.ipa
