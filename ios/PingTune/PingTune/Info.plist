@@ -22,6 +22,24 @@
 	<string>1</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>codmobile</string>
+		<string>codwarzone</string>
+		<string>tencentlaunch1106467070</string>
+		<string>fortnite</string>
+		<string>roblox</string>
+		<string>minecraft</string>
+		<string>yuanshengame</string>
+		<string>freefire</string>
+		<string>mobilelegends</string>
+		<string>clashofclans</string>
+		<string>brawlstars</string>
+		<string>eightballpool</string>
+		<string>stumbleguys</string>
+		<string>fifamobile</string>
+		<string>efootball</string>
+	</array>
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSAllowsLocalNetworking</key>

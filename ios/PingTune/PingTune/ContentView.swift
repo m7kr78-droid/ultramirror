@@ -113,7 +113,7 @@ struct ContentView: View {
                 Text("No games found.")
                     .foregroundStyle(Theme.muted)
             }
-            ForEach(filtered.prefix(30)) { app in
+            ForEach(filtered) { app in
                 Button {
                     selected = app
                     setStatus("Selected \(app.name).")
