@@ -103,7 +103,7 @@ extension OverlayController: AVPictureInPictureControllerDelegate {
     }
 }
 
-final class OverlayPiPViewController: UIViewController {
+final class OverlayPiPViewController: AVPictureInPictureVideoCallViewController {
     private let style: CrosshairStyle
     private var hosting: UIHostingController<CrosshairCanvas>?
 
